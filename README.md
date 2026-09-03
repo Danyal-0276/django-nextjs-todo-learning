@@ -80,12 +80,15 @@ From the repository root:
 py -m venv venv
 .\venv\Scripts\Activate.ps1
 python -m pip install Django==6.1.1
+Copy-Item todo\todo\settings.example.py todo\todo\settings.py # only after a fresh clone
 cd todo
 python manage.py migrate
 python manage.py runserver
 ```
 
 Open `http://127.0.0.1:8000/`. If PowerShell blocks activation, run `Set-ExecutionPolicy -Scope Process Bypass` for that terminal session and retry activation.
+
+The original local `settings.py` is ignored because it contains a hard-coded secret and was not modified. A clone uses `settings.example.py`; set `DJANGO_SECRET_KEY` before any non-local deployment.
 
 ## Frontend setup
 

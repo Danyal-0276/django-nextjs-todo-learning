@@ -8,6 +8,8 @@ __pycache__/
 .ruff_cache/
 db.sqlite3
 *.sqlite3
+# Existing local settings contains a hard-coded development secret.
+todo/todo/settings.py
 staticfiles/
 media/
 .env

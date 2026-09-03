@@ -1,8 +1,8 @@
 @import "tailwindcss";
 :root { --ink:#18312c; --muted:#65736f; --paper:#f5f1e8; --card:#fffdf8; --line:#d9d5ca; --accent:#ff6b4a; --mint:#b9dfd1; }
-@theme inline { --font-sans:var(--font-manrope); --font-display:var(--font-display); --color-ink:var(--ink); --color-muted:var(--muted); --color-paper:var(--paper); --color-card:var(--card); --color-line:var(--line); --color-accent:var(--accent); }
+@theme inline { --font-sans:"Segoe UI",Arial,sans-serif; --font-display:Georgia,"Times New Roman",serif; --color-ink:var(--ink); --color-muted:var(--muted); --color-paper:var(--paper); --color-card:var(--card); --color-line:var(--line); --color-accent:var(--accent); }
 * { box-sizing:border-box; } html { background:var(--paper); }
-body { min-height:100vh; margin:0; background:radial-gradient(circle at 85% 10%,rgba(185,223,209,.55),transparent 28rem),linear-gradient(135deg,rgba(255,255,255,.5),transparent 45%),var(--paper); color:var(--ink); font-family:var(--font-manrope),sans-serif; }
+body { min-height:100vh; margin:0; background:radial-gradient(circle at 85% 10%,rgba(185,223,209,.55),transparent 28rem),linear-gradient(135deg,rgba(255,255,255,.5),transparent 45%),var(--paper); color:var(--ink); font-family:"Segoe UI",Arial,sans-serif; }
 button,input { font:inherit; } button,a { -webkit-tap-highlight-color:transparent; } ::selection { background:var(--mint); color:var(--ink); }
 .paper-grid { background-image:linear-gradient(rgba(24,49,44,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(24,49,44,.045) 1px,transparent 1px); background-size:28px 28px; }
 @keyframes rise { from { opacity:0; transform:translateY(12px) } to { opacity:1; transform:translateY(0) } }
