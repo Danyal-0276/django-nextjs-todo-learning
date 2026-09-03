@@ -1,1 +1,22 @@
-import Link from "next/link";export default function NotFound(){return <main className="paper-grid grid min-h-screen place-items-center px-5 text-center"><div><p className="font-display text-8xl font-semibold text-accent">404</p><h1 className="mt-4 font-display text-4xl font-semibold">This page wandered off.</h1><p className="mt-3 text-muted">Let&apos;s get you back to the list that matters.</p><Link href="/todos" className="mt-8 inline-flex min-h-11 items-center rounded-xl bg-ink px-6 py-3 text-sm font-bold text-white">Return to tasks</Link></div></main>;}
+import Link from "next/link";
+export default function NotFound() {
+  return (
+    <main className="paper-grid grid min-h-screen place-items-center px-5 text-center">
+      <div>
+        <p className="font-display text-8xl font-semibold text-accent">404</p>
+        <h1 className="mt-4 font-display text-4xl font-semibold">
+          This page wandered off.
+        </h1>
+        <p className="mt-3 text-muted">
+          Let&apos;s get you back to the list that matters.
+        </p>
+        <Link
+          href="/todos"
+          className="mt-8 inline-flex min-h-11 items-center rounded-xl bg-ink px-6 py-3 text-sm font-bold text-white"
+        >
+          Return to tasks
+        </Link>
+      </div>
+    </main>
+  );
+}

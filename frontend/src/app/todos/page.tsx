@@ -1,1 +1,6 @@
-import type { Metadata } from "next";import { TodoDashboard } from "@/components/todos/todo-dashboard";export const metadata:Metadata={title:"My tasks"};export default function TodosPage(){return <TodoDashboard/>;}
+import type { Metadata } from "next";
+import { TodoDashboard } from "@/components/todos/todo-dashboard";
+export const metadata: Metadata = { title: "My tasks" };
+export default function TodosPage() {
+  return <TodoDashboard />;
+}

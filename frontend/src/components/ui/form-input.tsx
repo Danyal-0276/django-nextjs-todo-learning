@@ -1,3 +1,37 @@
 import type { InputHTMLAttributes } from "react";
-type Props=InputHTMLAttributes<HTMLInputElement>&{label:string;error?:string;hint?:string};
-export function FormInput({label,error,hint,id,className="",...props}:Props){const inputId=id??props.name;const helpId=`${inputId}-help`;return <label htmlFor={inputId} className="grid gap-2 text-sm font-bold text-ink">{label}<input id={inputId} aria-invalid={Boolean(error)} aria-describedby={(error||hint)?helpId:undefined} className={`h-12 rounded-xl border bg-white/70 px-4 font-medium outline-none transition placeholder:text-[#98a19e] focus:border-ink focus:ring-4 focus:ring-[#b9dfd166] ${error?"border-[#d45b45]":"border-line"} ${className}`} {...props}/>{(error||hint)&&<span id={helpId} className={`text-xs font-medium ${error?"text-[#b33f2d]":"text-muted"}`}>{error??hint}</span>}</label>;}
+type Props = InputHTMLAttributes<HTMLInputElement> & {
+  label: string;
+  error?: string;
+  hint?: string;
+};
+export function FormInput({
+  label,
+  error,
+  hint,
+  id,
+  className = "",
+  ...props
+}: Props) {
+  const inputId = id ?? props.name;
+  const helpId = `${inputId}-help`;
+  return (
+    <label htmlFor={inputId} className="grid gap-2 text-sm font-bold text-ink">
+      {label}
+      <input
+        id={inputId}
+        aria-invalid={Boolean(error)}
+        aria-describedby={error || hint ? helpId : undefined}
+        className={`h-12 rounded-xl border bg-white/70 px-4 font-medium outline-none transition placeholder:text-[#98a19e] focus:border-ink focus:ring-4 focus:ring-[#b9dfd166] ${error ? "border-[#d45b45]" : "border-line"} ${className}`}
+        {...props}
+      />
+      {(error || hint) && (
+        <span
+          id={helpId}
+          className={`text-xs font-medium ${error ? "text-[#b33f2d]" : "text-muted"}`}
+        >
+          {error ?? hint}
+        </span>
+      )}
+    </label>
+  );
+}

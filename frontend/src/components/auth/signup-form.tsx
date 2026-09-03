@@ -1,3 +1,76 @@
 "use client";
-import Link from "next/link";import { useRouter } from "next/navigation";import { FormEvent,useState } from "react";import { Button } from "@/components/ui/button";import { FormInput } from "@/components/ui/form-input";
-export function SignupForm(){const router=useRouter();const [errors,setErrors]=useState<Record<string,string>>({});const [loading,setLoading]=useState(false);function submit(event:FormEvent<HTMLFormElement>){event.preventDefault();const data=new FormData(event.currentTarget);const next:Record<string,string>={};if(String(data.get("username")??"").trim().length<3)next.username="Use at least 3 characters.";if(!/^\S+@\S+\.\S+$/.test(String(data.get("email")??"")))next.email="Enter a valid email address.";if(String(data.get("password")??"").length<8)next.password="Use at least 8 characters.";setErrors(next);if(Object.keys(next).length)return;setLoading(true);window.setTimeout(()=>router.push("/todos"),650);}return <form onSubmit={submit} noValidate className="grid gap-4"><div><h2 className="font-display text-3xl font-semibold">Create your space</h2><p className="mt-1 text-sm text-muted">Saved only for this demonstration.</p></div><FormInput label="Username" name="username" autoComplete="username" placeholder="Choose a username" error={errors.username} required/><FormInput label="Email" name="email" type="email" autoComplete="email" placeholder="you@example.com" error={errors.email} required/><FormInput label="Password" name="password" type="password" autoComplete="new-password" placeholder="At least 8 characters" error={errors.password} required/><Button type="submit" disabled={loading} className="mt-1 w-full">{loading?"Creating your space…":"Create account"}</Button><p className="text-center text-sm text-muted">Already have an account? <Link className="font-bold text-ink underline decoration-accent decoration-2 underline-offset-4" href="/login">Log in</Link></p></form>;}
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { FormEvent, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { FormInput } from "@/components/ui/form-input";
+export function SignupForm() {
+  const router = useRouter();
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(false);
+  function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const next: Record<string, string> = {};
+    if (String(data.get("username") ?? "").trim().length < 3)
+      next.username = "Use at least 3 characters.";
+    if (!/^\S+@\S+\.\S+$/.test(String(data.get("email") ?? "")))
+      next.email = "Enter a valid email address.";
+    if (String(data.get("password") ?? "").length < 8)
+      next.password = "Use at least 8 characters.";
+    setErrors(next);
+    if (Object.keys(next).length) return;
+    setLoading(true);
+    window.setTimeout(() => router.push("/todos"), 650);
+  }
+  return (
+    <form onSubmit={submit} noValidate className="grid gap-4">
+      <div>
+        <h2 className="font-display text-3xl font-semibold">
+          Create your space
+        </h2>
+        <p className="mt-1 text-sm text-muted">
+          Saved only for this demonstration.
+        </p>
+      </div>
+      <FormInput
+        label="Username"
+        name="username"
+        autoComplete="username"
+        placeholder="Choose a username"
+        error={errors.username}
+        required
+      />
+      <FormInput
+        label="Email"
+        name="email"
+        type="email"
+        autoComplete="email"
+        placeholder="you@example.com"
+        error={errors.email}
+        required
+      />
+      <FormInput
+        label="Password"
+        name="password"
+        type="password"
+        autoComplete="new-password"
+        placeholder="At least 8 characters"
+        error={errors.password}
+        required
+      />
+      <Button type="submit" disabled={loading} className="mt-1 w-full">
+        {loading ? "Creating your space…" : "Create account"}
+      </Button>
+      <p className="text-center text-sm text-muted">
+        Already have an account?{" "}
+        <Link
+          className="font-bold text-ink underline decoration-accent decoration-2 underline-offset-4"
+          href="/login"
+        >
+          Log in
+        </Link>
+      </p>
+    </form>
+  );
+}

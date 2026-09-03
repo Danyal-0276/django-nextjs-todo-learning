@@ -1,2 +1,15 @@
-import type { Metadata } from "next";import { AuthShell } from "@/components/auth/auth-shell";import { LoginForm } from "@/components/auth/login-form";
-export const metadata:Metadata={title:"Log in"};export default function LoginPage(){return <AuthShell eyebrow="Make room for what matters" title="A calmer way to get things done." copy="Daymark is the frontend learning space for your Django API journey—simple enough to understand, polished enough to grow."><LoginForm/></AuthShell>;}
+import type { Metadata } from "next";
+import { AuthShell } from "@/components/auth/auth-shell";
+import { LoginForm } from "@/components/auth/login-form";
+export const metadata: Metadata = { title: "Log in" };
+export default function LoginPage() {
+  return (
+    <AuthShell
+      eyebrow="Make room for what matters"
+      title="A calmer way to get things done."
+      copy="Daymark is the frontend learning space for your Django API journey—simple enough to understand, polished enough to grow."
+    >
+      <LoginForm />
+    </AuthShell>
+  );
+}

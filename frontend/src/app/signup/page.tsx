@@ -1,2 +1,15 @@
-import type { Metadata } from "next";import { AuthShell } from "@/components/auth/auth-shell";import { SignupForm } from "@/components/auth/signup-form";
-export const metadata:Metadata={title:"Sign up"};export default function SignupPage(){return <AuthShell eyebrow="Start with one small task" title="Build the habit. Learn the stack." copy="Create a mock account now. Later, this exact flow will connect to Django REST Framework and real JWT authentication."><SignupForm/></AuthShell>;}
+import type { Metadata } from "next";
+import { AuthShell } from "@/components/auth/auth-shell";
+import { SignupForm } from "@/components/auth/signup-form";
+export const metadata: Metadata = { title: "Sign up" };
+export default function SignupPage() {
+  return (
+    <AuthShell
+      eyebrow="Start with one small task"
+      title="Build the habit. Learn the stack."
+      copy="Create a mock account now. Later, this exact flow will connect to Django REST Framework and real JWT authentication."
+    >
+      <SignupForm />
+    </AuthShell>
+  );
+}
