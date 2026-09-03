@@ -1,0 +1,3 @@
+import type { ButtonHTMLAttributes } from "react";
+type Props=ButtonHTMLAttributes<HTMLButtonElement>&{variant?:"primary"|"secondary"|"danger"};
+export function Button({className="",variant="primary",...props}:Props){const styles={primary:"bg-ink text-white hover:bg-[#274b43] shadow-[0_8px_24px_rgba(24,49,44,.15)]",secondary:"border border-line bg-card text-ink hover:border-ink",danger:"text-[#a33b2b] hover:bg-[#fff0ec]"}[variant];return <button className={`min-h-11 rounded-xl px-5 py-2.5 text-sm font-bold transition disabled:cursor-not-allowed disabled:opacity-55 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${styles} ${className}`} {...props}/>;}

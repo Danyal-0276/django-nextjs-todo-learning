@@ -1,0 +1,1 @@
+export default function Loading(){return <main className="mx-auto min-h-screen w-full max-w-4xl animate-pulse px-5 py-28"><div className="h-5 w-40 rounded bg-[#d9d5ca]"/><div className="mt-5 h-14 w-3/4 rounded bg-[#d9d5ca]"/><div className="mt-12 h-80 rounded-[2rem] bg-white/60"/><span className="sr-only">Loading tasks</span></main>;}
