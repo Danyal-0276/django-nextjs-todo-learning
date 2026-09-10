@@ -77,3 +77,8 @@ USE_I18N = True
 USE_TZ = True
 STATIC_URL = "static/"
 MAILERS = {"default": {"BACKEND": "django.core.mail.backends.console.EmailBackend"}}
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+}
