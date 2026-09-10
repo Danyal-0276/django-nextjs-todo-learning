@@ -8,7 +8,14 @@ class TodoForm(forms.ModelForm):
         fields = ["title"]
 
     def clean_title(self):
-        title = self.cleaned_data.get("title").strip()
+        title = self.cleaned_data.get(
+            "title",
+            "",
+        ).strip()
+
         if not title:
-            raise forms.ValidationError("Todo title is required.")
+            raise forms.ValidationError(
+                "Todo title is required."
+            )
+
         return title

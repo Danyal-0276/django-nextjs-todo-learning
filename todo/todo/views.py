@@ -1,5 +1,3 @@
-from xml.parsers.expat import errors
-
 from django.contrib.auth import (
     authenticate,
     login as auth_login,
@@ -17,6 +15,7 @@ from django.shortcuts import (
 from django.views.decorators.http import require_POST
 from django.core.validators import validate_email
 from todo.models import Todo
+from todo.forms import TodoForm
 
 # Create your views here.
 
@@ -41,7 +40,7 @@ def signup(request):
 
         if User.objects.filter(email=email).exists():
             errors["email"] = "An account already uses this email."
-            
+
         try:
             validate_email(email)
         except ValidationError:
@@ -49,7 +48,7 @@ def signup(request):
 
         if not errors:
             User.objects.create_user(username=username, password=password, email=email)
-            return redirect("/login")
+            return redirect("login")
 
     return render(request, "signup.html", {"errors": errors})
 
@@ -88,30 +87,28 @@ def login_view(request):
 
 @login_required(login_url="login")
 def todo(request):
-    error = None
-
     if request.method == "POST":
-        title = request.POST.get("title", "").strip()
+        form = TodoForm(request.POST)
 
-        if not title:
-            error = "Todo title is required."
-        else:
-            Todo.objects.create(
-                title=title,
-                user=request.user,
-            )
+        if form.is_valid():
+            todo = form.save(commit=False)
+            todo.user = request.user
+            todo.save()
+
             return redirect("todo-list")
+    else:
+        form = TodoForm()
 
     res = Todo.objects.filter(
         user=request.user,
-    ).order_by("-date")
+    ).order_by("-created_at")
 
     return render(
         request,
         "todo.html",
         {
             "res": res,
-            "error": error,
+            "form": form,
         },
     )
 
