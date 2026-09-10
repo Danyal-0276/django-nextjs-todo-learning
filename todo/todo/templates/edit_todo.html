@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Todo</title>
+    <title>Edit Todo</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" />
@@ -19,39 +19,24 @@
     
     <div class="signup-login">
         <div class=" signup-box scr">
-            <div class="heading">Get Things Done?</div>
+            <div class="heading">Edit Task</div>
             <form method="post">
                 {% csrf_token %}
-                <input type="text" name="title" required class="todo-input inp" placeholder="What is the task today?" value={{obj.title}}>
-                <input type="hidden" name="srno" value={{obj.srno}}>
+                <label for="title">Task title</label>
+                <input id="title" type="text" name="title" required maxlength="120" class="todo-input inp"
+                    placeholder="What is the task today?" value="{{ obj.title }}" aria-describedby="title-error">
+                {% if error %}
+                <p id="title-error" role="alert">{{ error }}</p>
+                {% endif %}
                 
                 <input class="submit-button" type="submit" value="Update Task">
 
             </form>
-
-            {% for todo in res %}
-            <div class="Todo clickable-div {% if todo.status %}todo-green{% else %}todo-red{% endif %}" >
-                <h5>{{todo.srno}}</h5>
-                <p>{{todo.title}}</p>
-            
-
-
-
-                <div>
-                    <a href=""><i class="fa-solid fa-pen-to-square"></i></a>
-                    <a href=" /delete_todo/{{todo.srno}} "><i class="fa-solid fa-trash"></i></a>
-
-                    </i>
-                </div>
-            </div>
-
-
-            {% endfor %}
+            <a href="/todopage/">Cancel and return to todos</a>
         </div>
 
 
     </div>
-    <script src="{% static 'js/todo.js' %}"></script>
 </body>
 
 </html>

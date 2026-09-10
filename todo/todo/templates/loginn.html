@@ -1,10 +1,11 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="initial-scale=1, width=device-width" />
+  <title>Log in</title>
   <link rel="stylesheet" href="{% static 'css/index.css' %}" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Font Awesome 5 Brands:wght@400&display=swap" />
@@ -25,14 +26,20 @@
         <div class="field">
           <b>Username</b>
 
-          <input class="inp" type="text" name="fnm" required placeholder="Enter Your Username">
+          <input class="inp" type="text" name="username" required autocomplete="username"
+            value="{{ request.POST.username }}" placeholder="Enter your username">
         </div>
 
         <div class="field">
           <b>Password</b>
 
-          <input class="inp" type="password" name="pwd" required placeholder="Enter Password">
+          <input class="inp" type="password" name="password" required autocomplete="current-password"
+            placeholder="Enter your password">
         </div>
+
+        {% if error %}
+        <p role="alert">{{ error }}</p>
+        {% endif %}
 
         <div class="field">
           <input class="submit-button" type="submit" value="Login">
@@ -41,7 +48,7 @@
         <div class="field">
           <b style="margin-left:130px;">Don't have an account? </b>
           <br>
-          <a class="anc" href="/signup">Signup</a>
+          <a class="anc" href="/">Sign up</a>
         </div>
 
       </form>

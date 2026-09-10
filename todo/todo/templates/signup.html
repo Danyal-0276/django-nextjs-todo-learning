@@ -1,11 +1,12 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="initial-scale=1, width=device-width" />
+    <title>Sign up</title>
     <link rel="stylesheet" href="{% static 'css/index.css' %}" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" />
     <link rel="stylesheet"
@@ -18,38 +19,52 @@
             <form method="post">
                 {% csrf_token %}
                 <div class="heading">
-                    SignUp
+                    Sign Up
                 </div>
 
                 <div class="line"></div>
                 <div class="field">
                     <b>Username</b>
 
-                    <input class="inp" type="text" name="fnm" required placeholder="Enter Your Full Name">
+                    <input class="inp" type="text" name="username" required autocomplete="username"
+                        value="{{ request.POST.username }}" placeholder="Choose a username"
+                        aria-describedby="username-error">
+                    {% if errors.username %}
+                    <p id="username-error" role="alert">{{ errors.username }}</p>
+                    {% endif %}
                 </div>
 
 
                 <div class="field">
                     <b>Email</b>
 
-                    <input class="inp" type="email" name="emailid" required placeholder="Enter Your Username">
+                    <input class="inp" type="email" name="email" required autocomplete="email"
+                        value="{{ request.POST.email }}" placeholder="Enter your email address">
                 </div>
 
 
                 <div class="field">
                     <b>Password</b>
 
-                    <input  class="inp" type="password" name="pwd" required placeholder="Enter Password">
+                    <input class="inp" type="password" name="password" required autocomplete="new-password"
+                        aria-describedby="password-error" placeholder="Enter a strong password">
+                    {% if errors.password %}
+                    <div id="password-error" role="alert">
+                        {% for message in errors.password %}
+                        <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="field">
-                    <input class="submit-button"type="submit" value="Signup">
+                    <input class="submit-button" type="submit" value="Sign Up">
                 </div>
                 <div class="line"></div>
 
                 <div class="field">
                     <b style="margin-left:130px;">Already have an account?</b>
                     <br>
-                    <a class="anc"href="/loginn">Login</a>
+                    <a class="anc" href="{% url 'login' %}">Login</a>
                 </div>
 
 

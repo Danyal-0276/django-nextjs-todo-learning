@@ -1,72 +1,142 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
-from todo import models
-from todo.models import Todo
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import (
+    authenticate,
+    login as auth_login,
+    logout as auth_logout,
+)
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
+from django.shortcuts import (
+    get_object_or_404,
+    redirect,
+    render,
+)
+from django.views.decorators.http import require_POST
+
+from todo.models import Todo
 
 # Create your views here.
 
+
 def signup(request):
+    errors = {}
+
     if request.method == "POST":
-        # Handle signup logic here
-        fnm = request.POST.get("fnm")
-        lnm = request.POST.get("lnm")
-        emailid = request.POST.get("email")
-        pwd = request.POST.get("pwd")
-        print(fnm, lnm, emailid, pwd)
-        my_user = User.objects.create_user(fnm, emailid, pwd)
-        my_user.save()
-        return redirect("/loginn")
+        username = request.POST.get("username", "").strip()
+        password = request.POST.get("password", "")
+        email = request.POST.get("email", "").strip()
 
-        pass
-    return render(request, "signup.html")
+        if not username:
+            errors["username"] = "Username is required."
+        if User.objects.filter(username=username).exists():
+            errors["username"] = "Username already exists."
 
+        try:
+            validate_password(password)
+        except ValidationError as e:
+            errors["password"] = list(e.messages)
 
-def login(request):
-    if request.method == "POST":
-        fnm = request.POST.get("fnm")
-        emailid = request.POST.get("email")
-        pwd = request.POST.get("pwd")
-        print(fnm, pwd)
-        userr = authenticate(request, username=fnm, password=pwd)
-        if userr is not None:
-            login(request, userr)
-            return redirect("/todopage")
-        else:
+        if not errors:
+            User.objects.create_user(username=username, password=password, email=email)
             return redirect("/loginn")
-    return render(request, "loginn.html")
+    return render(request, "signup.html", {"errors": errors})
 
-@login_required(login_url="/loginn")
-def todo(request):
+
+def login_view(request):
+    error = None
+
     if request.method == "POST":
-        title = request.POST.get("title")
-        obj = models.Todo(title=title, user=request.user)
-        obj.save()
-        res = models.Todo.objects.filter(user=request.user).order_by("-date")
-        return render(request, "todo.html", {"res": res})
-    res = models.Todo.objects.filter(user=request.user).order_by("-date")
-    return render(request, "todo.html", {"res": res})
+        username = request.POST.get(
+            "username",
+            "",
+        ).strip()
+        password = request.POST.get(
+            "password",
+            "",
+        )
+
+        user = authenticate(
+            request,
+            username=username,
+            password=password,
+        )
+
+        if user is not None:
+            auth_login(request, user)
+            return redirect("todo-list")
+
+        error = "Invalid username or password."
+
+    return render(
+        request,
+        "loginn.html",
+        {"error": error},
+    )
+
+
+@login_required(login_url="/loginn/")
+def todo(request):
+    error = None
+
+    if request.method == "POST":
+        title = request.POST.get("title", "").strip()
+
+        if not title:
+            error = "Todo title is required."
+        else:
+            Todo.objects.create(
+                title=title,
+                user=request.user,
+            )
+            return redirect("todo-list")
+
+    res = Todo.objects.filter(
+        user=request.user,
+    ).order_by("-date")
+
+    return render(
+        request,
+        "todo.html",
+        {
+            "res": res,
+            "error": error,
+        },
+    )
+
 
 @login_required(login_url="/loginn")
 def edit_todo(request, srno):
+    obj = get_object_or_404(Todo, srno=srno, user=request.user)
     if request.method == "POST":
-        title = request.POST.get("title")
-        obj = models.Todo.objects.get(srno=srno)
+        title = request.POST.get("title", "").strip()
+        if not title:
+            return render(
+                request,
+                "edit_todo.html",
+                {"obj": obj, "error": "Title cannot be empty."},
+            )
         obj.title = title
         obj.save()
-        user = request.user
-        return redirect("/todopage", {"obj": obj})
-    obj = models.Todo.objects.get(srno=srno)
-    return render(request, "todo.html", {"obj": obj})
+        return redirect("/todopage/")
+    return render(request, "edit_todo.html", {"obj": obj})
 
-@login_required(login_url="/loginn")
+
+@login_required(login_url="/loginn/")
+@require_POST
 def delete_todo(request, srno):
-    obj = models.Todo.objects.get(srno=srno)
-    obj.delete()
-    return redirect("/todopage")
+    obj = get_object_or_404(
+        Todo,
+        srno=srno,
+        user=request.user,
+    )
 
-@login_required(login_url="/loginn")
+    obj.delete()
+
+    return redirect("/todopage/")
+
+
+@login_required(login_url="/loginn/")
 def signout(request):
-    logout(request)
-    return redirect("/loginn")
+    auth_logout(request)
+    return redirect("login")

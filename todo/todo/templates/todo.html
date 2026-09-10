@@ -30,10 +30,15 @@
                 </div>
 
 
-                <form method="post">
+                <form method="post" action="/todopage/">
                     {% csrf_token %}
-                    <input type="text" name="title" required class="todo-input inp"
-                        placeholder="What is the task today?">
+                    <label for="todo-title">New task</label>
+                    <input id="todo-title" type="text" name="title" required maxlength="120" class="todo-input inp"
+                        value="{{ request.POST.title }}" placeholder="What is the task today?"
+                        aria-describedby="todo-error">
+                    {% if error %}
+                    <p id="todo-error" role="alert">{{ error }}</p>
+                    {% endif %}
 
 
                     <input class="submit-button" type="submit" value="Add Task">
@@ -41,27 +46,22 @@
                 </form>
 
                 {% for todo in res %}
-                <div class="Todo clickable-div {% if todo.status %}todo-green{% else %}todo-red{% endif %}">
-                    <form method="post" action="">
-                        {% csrf_token %}
-
-                        <!-- <h5><input name="status"required type="submit" {% if todo.status %} checked {% endif %}></h5> -->
-                    </form>
-
-                    <p class="{% if todo.status %} completed {% endif %} ">{{todo.title}}</p>
-
-
-
-
+                <div class="Todo clickable-div {% if todo.completed %}todo-green{% else %}todo-red{% endif %}">
+                    <p class="{% if todo.completed %}completed{% endif %}">{{ todo.title }}</p>
                     <div>
-                        <a href=" /edit_todo/{{todo.srno}} "><i class="fa-solid fa-pen-to-square"></i></a>
-                        <a href=" /delete_todo/{{todo.srno}} "><i class="fa-solid fa-trash"></i></a>
-
-                        </i>
+                        <a href="{% url 'edit_todo' todo.srno %}" aria-label="Edit {{ todo.title }}">
+                            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                        </a>
+                        <form method="post" action="{% url 'delete_todo' todo.srno %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" aria-label="Delete {{ todo.title }}">
+                                <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                            </button>
+                        </form>
                     </div>
                 </div>
-
-
+                {% empty %}
+                <p>You have no todos yet. Add your first task above.</p>
                 {% endfor %}
             </div>
 
