@@ -1,3 +1,5 @@
+from xml.parsers.expat import errors
+
 from django.contrib.auth import (
     authenticate,
     login as auth_login,
@@ -13,7 +15,7 @@ from django.shortcuts import (
     render,
 )
 from django.views.decorators.http import require_POST
-
+from django.core.validators import validate_email
 from todo.models import Todo
 
 # Create your views here.
@@ -37,9 +39,18 @@ def signup(request):
         except ValidationError as e:
             errors["password"] = list(e.messages)
 
+        if User.objects.filter(email=email).exists():
+            errors["email"] = "An account already uses this email."
+            
+        try:
+            validate_email(email)
+        except ValidationError:
+            errors["email"] = "Please enter a valid email address."
+
         if not errors:
             User.objects.create_user(username=username, password=password, email=email)
-            return redirect("/loginn")
+            return redirect("/login")
+
     return render(request, "signup.html", {"errors": errors})
 
 
@@ -75,7 +86,7 @@ def login_view(request):
     )
 
 
-@login_required(login_url="/loginn/")
+@login_required(login_url="login")
 def todo(request):
     error = None
 
@@ -105,7 +116,7 @@ def todo(request):
     )
 
 
-@login_required(login_url="/loginn")
+@login_required(login_url="login")
 def edit_todo(request, srno):
     obj = get_object_or_404(Todo, srno=srno, user=request.user)
     if request.method == "POST":
@@ -118,11 +129,11 @@ def edit_todo(request, srno):
             )
         obj.title = title
         obj.save()
-        return redirect("/todopage/")
+        return redirect("todo-list")
     return render(request, "edit_todo.html", {"obj": obj})
 
 
-@login_required(login_url="/loginn/")
+@login_required(login_url="login")
 @require_POST
 def delete_todo(request, srno):
     obj = get_object_or_404(
@@ -133,10 +144,19 @@ def delete_todo(request, srno):
 
     obj.delete()
 
-    return redirect("/todopage/")
+    return redirect("todo-list")
 
 
-@login_required(login_url="/loginn/")
+@login_required(login_url="login")
 def signout(request):
     auth_logout(request)
     return redirect("login")
+
+
+@login_required(login_url="login")
+@require_POST
+def toggle_todo(request, srno):
+    obj = get_object_or_404(Todo, srno=srno, user=request.user)
+    obj.completed = not obj.completed
+    obj.save()
+    return redirect("todo-list")
