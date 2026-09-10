@@ -39,7 +39,11 @@
                     <b>Email</b>
 
                     <input class="inp" type="email" name="email" required autocomplete="email"
-                        value="{{ request.POST.email }}" placeholder="Enter your email address">
+                        value="{{ request.POST.email }}" placeholder="Enter your email address"
+                        aria-describedby="email-error">
+                    {% if errors.email %}
+                    <p id="email-error" role="alert">{{ errors.email }}</p>
+                    {% endif %}
                 </div>
 
 

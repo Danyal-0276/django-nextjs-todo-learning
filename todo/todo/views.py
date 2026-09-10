@@ -34,7 +34,7 @@ def signup(request):
             errors["username"] = "Username already exists."
 
         try:
-            validate_password(password)
+            validate_password(password, user=User(username=username, email=email))
         except ValidationError as e:
             errors["password"] = list(e.messages)
 
@@ -117,17 +117,13 @@ def todo(request):
 def edit_todo(request, srno):
     obj = get_object_or_404(Todo, srno=srno, user=request.user)
     if request.method == "POST":
-        title = request.POST.get("title", "").strip()
-        if not title:
-            return render(
-                request,
-                "edit_todo.html",
-                {"obj": obj, "error": "Title cannot be empty."},
-            )
-        obj.title = title
-        obj.save()
-        return redirect("todo-list")
-    return render(request, "edit_todo.html", {"obj": obj})
+        form = TodoForm(request.POST, instance=obj)
+        if form.is_valid():
+            form.save()
+            return redirect("todo-list")
+    else:
+        form = TodoForm(instance=obj)
+    return render(request, "edit_todo.html", {"obj": obj, "form": form})
 
 
 @login_required(login_url="login")
@@ -145,6 +141,7 @@ def delete_todo(request, srno):
 
 
 @login_required(login_url="login")
+@require_POST
 def signout(request):
     auth_logout(request)
     return redirect("login")
@@ -155,5 +152,5 @@ def signout(request):
 def toggle_todo(request, srno):
     obj = get_object_or_404(Todo, srno=srno, user=request.user)
     obj.completed = not obj.completed
-    obj.save()
+    obj.save(update_fields=["completed", "updated_at"])
     return redirect("todo-list")

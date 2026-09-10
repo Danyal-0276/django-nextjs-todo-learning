@@ -24,15 +24,18 @@
                 {% csrf_token %}
                 <label for="title">Task title</label>
                 <input id="title" type="text" name="title" required maxlength="120" class="todo-input inp"
-                    placeholder="What is the task today?" value="{{ obj.title }}" aria-describedby="title-error">
-                {% if error %}
-                <p id="title-error" role="alert">{{ error }}</p>
+                    placeholder="What is the task today?" value="{{ form.title.value|default_if_none:'' }}"
+                    aria-describedby="title-error">
+                {% if form.title.errors %}
+                <div id="title-error" role="alert">
+                    {% for error in form.title.errors %}<p>{{ error }}</p>{% endfor %}
+                </div>
                 {% endif %}
                 
                 <input class="submit-button" type="submit" value="Update Task">
 
             </form>
-            <a href="/todopage/">Cancel and return to todos</a>
+            <a href="{% url 'todo-list' %}">Cancel and return to todos</a>
         </div>
 
 

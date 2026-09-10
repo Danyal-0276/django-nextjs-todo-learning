@@ -32,13 +32,16 @@
             <!-- <div class="ancaa" title=""><i class="fa-solid fa-user"></i> </div> -->
             <div class="heading">Get Things Done?</div>
             <div class="anca">
-              <a href="{% url 'signout' %}" class="sign"
-                ><i class="fa-solid fa-right-from-bracket"></i
-              ></a>
+              <form method="post" action="{% url 'signout' %}">
+                {% csrf_token %}
+                <button type="submit" class="sign" aria-label="Log out">
+                  <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+                </button>
+              </form>
             </div>
           </div>
 
-          <form method="post" action="/todopage/">
+          <form method="post" action="{% url 'todo-list' %}">
             {% csrf_token %}
             <label for="todo-title">New task</label>
             <input
@@ -48,29 +51,28 @@
               required
               maxlength="120"
               class="todo-input inp"
-              value="{{ request.POST.title }}"
+              value="{{ form.title.value|default_if_none:'' }}"
               placeholder="What is the task today?"
               aria-describedby="todo-error"
             />
-            {% if error %}
-            <p id="todo-error" role="alert">{{ error }}</p>
+            {% if form.title.errors %}
+            <div id="todo-error" role="alert">
+              {% for error in form.title.errors %}<p>{{ error }}</p>{% endfor %}
+            </div>
             {% endif %}
 
             <input class="submit-button" type="submit" value="Add Task" />
           </form>
-          <form method="post" action="{% url 'toggle_todo' todo.srno %}">
-            {% csrf_token %}
-
-            <button type="submit">
-              {% if todo.completed %} Mark incomplete {% else %} Mark complete
-              {% endif %}
-            </button>
-          </form>
-
           {% for todo in res %}
           <div
             class="Todo clickable-div {% if todo.completed %}todo-green{% else %}todo-red{% endif %}"
           >
+            <form method="post" action="{% url 'toggle_todo' todo.srno %}">
+              {% csrf_token %}
+              <button type="submit" aria-label="{% if todo.completed %}Mark {{ todo.title }} incomplete{% else %}Mark {{ todo.title }} complete{% endif %}">
+                {% if todo.completed %}Mark incomplete{% else %}Mark complete{% endif %}
+              </button>
+            </form>
             <p class="{% if todo.completed %}completed{% endif %}">
               {{ todo.title }}
             </p>
