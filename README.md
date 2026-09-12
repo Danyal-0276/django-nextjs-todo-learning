@@ -4,7 +4,7 @@
 
 A beginner-friendly full-stack Todo application for learning Django REST APIs, Next.js integration, PostgreSQL, JWT authentication, and user authorization.
 
-The repository deliberately separates the existing server-rendered Django application from a new Next.js frontend. The frontend currently uses local mock state; REST endpoints, PostgreSQL, CORS, and JWT are planned exercises rather than finished features.
+The repository deliberately separates the server-rendered Django application from a Next.js frontend. The Django backend now uses PostgreSQL and exposes authenticated Todo REST endpoints with JWT access and refresh tokens. The frontend still uses local mock state, so CORS, API registration, and browser integration remain learning exercises.
 
 ## Learning objectives
 
@@ -19,7 +19,11 @@ The repository deliberately separates the existing server-rendered Django applic
 
 ### Implemented
 
-- Existing Django templates, user signup/login views, sessions, and per-user todo model.
+- Django templates, validated user signup/login, session authentication, and secure per-user Todo CRUD.
+- PostgreSQL persistence through Django's ORM and environment-based database configuration.
+- Django REST Framework serializer, viewset, router, protected Todo CRUD endpoints, and per-user queryset filtering.
+- Simple JWT access-token login, refresh, verification, and Bearer-token authentication.
+- Backend model, authentication, template-view, authorization, REST API, and JWT tests (46 total).
 - Next.js App Router frontend with TypeScript, Tailwind CSS, and ESLint.
 - Responsive login, signup, dashboard, loading, empty, feedback, and not-found views.
 - Frontend add, edit, complete/uncomplete, and delete interactions using React state.
@@ -33,27 +37,31 @@ The repository deliberately separates the existing server-rendered Django applic
 
 ### Planned
 
-- DRF serializers, viewsets, routers, CRUD endpoints, PostgreSQL, Simple JWT, permissions, CORS, tests, and deployment.
-
-> The legacy Django UI has known learning-project issues: its login view shadows Django's `login` helper, signup reads the wrong email field, edit/delete lookups are not scoped to the current user, deletion uses GET, and templates reference a missing `status` field. These files are intentionally preserved for the learner to improve.
+- REST registration, refresh-token blacklisting/logout, and CORS configuration.
+- Connecting the Next.js forms and Todo dashboard to the Django API.
+- Automatic access-token refresh, frontend API error handling, frontend tests, CI, and deployment.
 
 ## Technology stack
 
-- **Backend:** Python, Django 6.1.1, SQLite (current)
+- **Backend:** Python, Django 6.1.1, Django REST Framework 3.18.1, Simple JWT 5.5.1, PostgreSQL
 - **Frontend:** Next.js 16 App Router, React 19, TypeScript, Tailwind CSS 4
-- **Planned:** Django REST Framework, PostgreSQL, Simple JWT, django-cors-headers
+- **Planned:** django-cors-headers, full frontend integration, automated frontend tests, and deployment
 
 ## Project structure
 
 ```text
 .
-├── todo/                         # Existing Django project (unchanged)
+├── todo/                         # Django backend
 │   ├── manage.py
 │   └── todo/
 │       ├── migrations/
 │       ├── static/
 │       ├── templates/
+│       ├── tests/                # Model, HTML view, API, and JWT tests
+│       ├── api_urls.py           # REST Todo router
+│       ├── api_views.py          # User-scoped REST Todo viewset
 │       ├── models.py
+│       ├── serializers.py        # Todo JSON validation/representation
 │       ├── settings.py
 │       ├── urls.py
 │       └── views.py
@@ -79,8 +87,10 @@ From the repository root:
 ```powershell
 py -m venv venv
 .\venv\Scripts\Activate.ps1
-python -m pip install Django==6.1.1
+python -m pip install -r requirements.txt
 Copy-Item todo\todo\settings.example.py todo\todo\settings.py # only after a fresh clone
+Copy-Item .env.example .env
+# Replace placeholder values in .env with your local PostgreSQL credentials.
 cd todo
 python manage.py migrate
 python manage.py runserver
@@ -88,7 +98,7 @@ python manage.py runserver
 
 Open `http://127.0.0.1:8000/`. If PowerShell blocks activation, run `Set-ExecutionPolicy -Scope Process Bypass` for that terminal session and retry activation.
 
-The original local `settings.py` is ignored because it contains a hard-coded secret and was not modified. A clone uses `settings.example.py`; set `DJANGO_SECRET_KEY` before any non-local deployment.
+The tracked settings read Django and PostgreSQL values from the untracked root `.env`. Never commit `.env`, real database passwords, JWTs, or production secret keys.
 
 ## Frontend setup
 
@@ -114,28 +124,28 @@ npm run lint
 npm run build
 ```
 
-## Proposed API (not implemented)
+## API status
 
 | Method | Endpoint | Purpose | Authentication |
 |---|---|---|---|
-| POST | `/api/auth/register/` | Create a user | Public |
-| POST | `/api/auth/token/` | Obtain access and refresh tokens | Public |
-| POST | `/api/auth/token/refresh/` | Refresh an access token | Refresh token |
-| GET | `/api/todos/` | List the current user's todos | Access token |
-| POST | `/api/todos/` | Create a todo owned by the current user | Access token |
-| GET | `/api/todos/{id}/` | Read one owned todo | Access token |
-| PATCH | `/api/todos/{id}/` | Edit or toggle one owned todo | Access token |
-| DELETE | `/api/todos/{id}/` | Delete one owned todo | Access token |
+| POST | `/api/auth/register/` | Create a user (planned) | Public |
+| POST | `/api/auth/token/` | Obtain access and refresh tokens (implemented) | Public |
+| POST | `/api/auth/token/refresh/` | Refresh an access token (implemented) | Refresh token |
+| POST | `/api/auth/token/verify/` | Verify a token (implemented) | Token in request body |
+| GET | `/api/todos/` | List the current user's todos (implemented) | Access token |
+| POST | `/api/todos/` | Create an owned todo (implemented) | Access token |
+| GET | `/api/todos/{id}/` | Read one owned todo (implemented) | Access token |
+| PATCH | `/api/todos/{id}/` | Edit or toggle one owned todo (implemented) | Access token |
+| DELETE | `/api/todos/{id}/` | Delete one owned todo (implemented) | Access token |
 
-## Planned authentication flow
+## Authentication flow
 
-1. Registration sends validated user details to Django.
-2. Login sends credentials to the token endpoint.
-3. Django returns short-lived access and longer-lived refresh tokens.
-4. The client sends `Authorization: Bearer <access-token>` on protected requests.
-5. On expiry, the client exchanges the refresh token for a new access token and retries once.
-6. Django permissions and queryset filtering enforce ownership; hiding UI is not authorization.
-7. Logout clears client tokens and, if implemented later, blacklists the refresh token.
+1. Existing users can send credentials to the implemented token endpoint.
+2. Django returns a five-minute access token and a one-day refresh token.
+3. API clients send `Authorization: Bearer <access-token>` on protected requests.
+4. Django permissions and queryset filtering enforce ownership; hiding UI is not authorization.
+5. The implemented refresh endpoint exchanges a valid refresh token for a new access token.
+6. API registration, automatic frontend refresh, and refresh-token blacklisting/logout are the next planned stages.
 
 Token storage in this project is only a commented learning starting point. Review XSS, CSRF, secure cookies, token rotation, and logout behavior before choosing a production design.
 
