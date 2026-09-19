@@ -1,11 +1,39 @@
 "use client";
+import { useEffect, useSyncExternalStore } from "react";
+import { useRouter } from "next/navigation";
 import { Header } from "@/components/layout/header";
 import { TodoForm } from "@/components/todos/todo-form";
 import { TodoList } from "@/components/todos/todo-list";
 import { useTodos } from "@/hooks/use-todos";
+import { tokenStorage } from "@/lib/token-storage";
+
+const subscribeToHydration = () => () => {};
+
 export function TodoDashboard() {
+  const router = useRouter();
+  const hydrated = useSyncExternalStore(
+    subscribeToHydration,
+    () => true,
+    () => false,
+  );
+  const accessToken = hydrated ? tokenStorage.getAccess() : null;
   const { todos, completed, notice, add, update, toggle, remove } = useTodos();
   const remaining = todos.length - completed;
+
+  useEffect(() => {
+    if (hydrated && !accessToken) {
+      router.replace("/login");
+    }
+  }, [accessToken, hydrated, router]);
+
+  if (!hydrated || !accessToken) {
+    return (
+      <main className="grid min-h-screen place-items-center" aria-live="polite">
+        <p className="text-sm font-bold text-muted">Checking your session…</p>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen">
       <Header />
