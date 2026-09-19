@@ -1,25 +1,67 @@
 "use client";
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FormInput } from "@/components/ui/form-input";
+import { ApiError } from "@/lib/api-client";
+import { tokenStorage } from "@/lib/token-storage";
+import { authService } from "@/services/auth-service";
+
 export function LoginForm() {
   const router = useRouter();
+
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
-  function submit(event: FormEvent<HTMLFormElement>) {
+
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
     const data = new FormData(event.currentTarget);
+    const username = String(data.get("username") ?? "").trim();
+    const password = String(data.get("password") ?? "");
     const next: Record<string, string> = {};
-    if (String(data.get("username") ?? "").trim().length < 3)
-      next.username = "Use at least 3 characters.";
-    if (String(data.get("password") ?? "").length < 8)
-      next.password = "Use at least 8 characters.";
+
+    if (!username) {
+      next.username = "Username is required.";
+    }
+
+    if (!password) {
+      next.password = "Password is required.";
+    }
+
     setErrors(next);
-    if (Object.keys(next).length) return;
-    setLoading(true);
-    window.setTimeout(() => router.push("/todos"), 650);
+
+    if (Object.keys(next).length > 0) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const tokens = await authService.login({
+        username,
+        password,
+      });
+
+      tokenStorage.save(tokens);
+
+      router.push("/todos");
+      router.refresh();
+    } catch (error) {
+      if (error instanceof ApiError) {
+        setErrors({
+          form: error.message,
+        });
+      } else {
+        setErrors({
+          form: "Could not connect to the server. Please try again.",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
   }
   return (
     <form onSubmit={submit} noValidate className="grid gap-5">
