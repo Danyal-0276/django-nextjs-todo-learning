@@ -60,4 +60,8 @@ urlpatterns = [
         TokenVerifyView.as_view(),
         name="token_verify",
     ),
+    path(
+        "api/auth/",
+        include("todo.auth_urls"),
+    ),
 ]
