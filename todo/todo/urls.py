@@ -17,7 +17,6 @@ Including another URLconf
 
 from django.urls import include, path
 from django.contrib import admin
-from . import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -32,15 +31,9 @@ urlpatterns = [
             namespace="rest_framework",
         ),
     ),
-    path("", views.signup, name="signup"),
-    path("loginn/", views.login_view, name="login"),
-    path("todopage/", views.todo, name="todo-list"),
-    path("edit_todo/<int:srno>/", views.edit_todo, name="edit_todo"),
-    path("delete_todo/<int:srno>/", views.delete_todo, name="delete_todo"),
-    path("signout/", views.signout, name="signout"),
-    path("toggle_todo/<int:srno>/", views.toggle_todo, name="toggle_todo"),
     path(
         "api/auth/",
         include("todo.auth_urls"),
     ),
+    path("", include("todo.legacy_ui.urls")),
 ]

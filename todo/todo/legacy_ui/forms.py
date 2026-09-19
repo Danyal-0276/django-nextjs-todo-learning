@@ -1,5 +1,5 @@
 from django import forms
-from .models import Todo
+from todo.models import Todo
 
 
 class TodoForm(forms.ModelForm):

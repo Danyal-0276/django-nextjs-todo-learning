@@ -15,9 +15,7 @@ from django.shortcuts import (
 from django.views.decorators.http import require_POST
 from django.core.validators import validate_email
 from todo.models import Todo
-from todo.forms import TodoForm
-
-# Create your views here.
+from todo.legacy_ui.forms import TodoForm
 
 
 def signup(request):
@@ -50,7 +48,7 @@ def signup(request):
             User.objects.create_user(username=username, password=password, email=email)
             return redirect("login")
 
-    return render(request, "signup.html", {"errors": errors})
+    return render(request, "legacy_ui/signup.html", {"errors": errors})
 
 
 def login_view(request):
@@ -80,7 +78,7 @@ def login_view(request):
 
     return render(
         request,
-        "loginn.html",
+        "legacy_ui/loginn.html",
         {"error": error},
     )
 
@@ -105,7 +103,7 @@ def todo(request):
 
     return render(
         request,
-        "todo.html",
+        "legacy_ui/todo.html",
         {
             "res": res,
             "form": form,
@@ -123,7 +121,11 @@ def edit_todo(request, srno):
             return redirect("todo-list")
     else:
         form = TodoForm(instance=obj)
-    return render(request, "edit_todo.html", {"obj": obj, "form": form})
+    return render(
+        request,
+        "legacy_ui/edit_todo.html",
+        {"obj": obj, "form": form},
+    )
 
 
 @login_required(login_url="login")

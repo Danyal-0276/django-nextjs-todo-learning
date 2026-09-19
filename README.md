@@ -4,7 +4,7 @@
 
 A beginner-friendly full-stack Todo application for learning Django REST APIs, Next.js integration, PostgreSQL, JWT authentication, and user authorization.
 
-The repository deliberately separates the server-rendered Django application from a Next.js frontend. The Django backend uses PostgreSQL and exposes registration, JWT authentication, and user-scoped Todo REST endpoints. The Next.js frontend uses those APIs for registration, login, and persistent Todo CRUD operations.
+The repository deliberately separates the original server-rendered Django interface from the REST/JWT backend consumed by Next.js. The preserved `legacy_ui` package demonstrates Django templates, forms, sessions, and ordinary HTTP form submissions. The Next.js frontend uses the REST API for registration, JWT login, and persistent Todo CRUD operations in PostgreSQL.
 
 ## Learning objectives
 
@@ -58,12 +58,19 @@ The repository deliberately separates the server-rendered Django application fro
 ├── todo/                         # Django backend
 │   ├── manage.py
 │   └── todo/
+│       ├── legacy_ui/            # Preserved original Django HTML interface
+│       │   ├── templates/        # Server-rendered Django pages
+│       │   ├── static/           # Legacy CSS and JavaScript
+│       │   ├── reference_screenshots/
+│       │   ├── forms.py
+│       │   ├── urls.py
+│       │   └── views.py
 │       ├── migrations/
-│       ├── static/
-│       ├── templates/
 │       ├── tests/                # Model, HTML view, API, and JWT tests
 │       ├── api_urls.py           # REST Todo router
 │       ├── api_views.py          # User-scoped REST Todo viewset
+│       ├── auth_urls.py          # REST registration and JWT routes
+│       ├── auth_views.py         # REST registration view
 │       ├── models.py
 │       ├── serializers.py        # Todo JSON validation/representation
 │       ├── settings.py
@@ -83,6 +90,13 @@ The repository deliberately separates the server-rendered Django application fro
 ├── LEARNING_ROADMAP.md
 └── README.md
 ```
+
+## Two interfaces, one backend model
+
+- **Legacy Django UI:** `/`, `/loginn/`, and `/todopage/` use `legacy_ui`, Django templates, HTML form submissions, CSRF protection, and session authentication. It is preserved as a learning reference.
+- **Next.js UI:** `http://localhost:3000` uses JSON requests to `/api/auth/` and `/api/todos/`, JWT authentication, CORS, and the shared PostgreSQL-backed Django models.
+
+The Next.js application never renders the legacy templates. Both interfaces can remain available while you compare traditional Django request/response development with a separated frontend/API architecture.
 
 ## Backend setup (Windows PowerShell)
 

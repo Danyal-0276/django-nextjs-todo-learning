@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "todo",
+    "todo.legacy_ui.apps.LegacyUiConfig",
 ]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
