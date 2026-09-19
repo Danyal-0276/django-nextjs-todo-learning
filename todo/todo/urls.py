@@ -19,12 +19,6 @@ from django.urls import include, path
 from django.contrib import admin
 from . import views
 
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-    TokenVerifyView,
-)
-
 urlpatterns = [
     path("admin/", admin.site.urls),
     path(
@@ -46,18 +40,7 @@ urlpatterns = [
     path("signout/", views.signout, name="signout"),
     path("toggle_todo/<int:srno>/", views.toggle_todo, name="toggle_todo"),
     path(
-        "api/auth/token/",
-        TokenObtainPairView.as_view(),
-        name="token_obtain_pair",
-    ),
-    path(
-        "api/auth/token/refresh/",
-        TokenRefreshView.as_view(),
-        name="token_refresh",
-    ),
-    path(
-        "api/auth/token/verify/",
-        TokenVerifyView.as_view(),
-        name="token_verify",
+        "api/auth/",
+        include("todo.auth_urls"),
     ),
 ]
