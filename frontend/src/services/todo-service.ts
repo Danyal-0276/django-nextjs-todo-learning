@@ -10,6 +10,9 @@ export const todoService = {
       method: "PATCH",
       body: JSON.stringify(data),
     }),
+
   remove: (id: number) =>
-    apiRequest<void>(`/todos/${id}/`, { method: "DELETE" }),
+    apiRequest<void>(`/todos/${id}/`, {
+      method: "DELETE",
+    }),
 };
