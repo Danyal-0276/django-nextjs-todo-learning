@@ -7,7 +7,7 @@ from rest_framework import serializers
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         write_only=True,
-        trim_whitespaces=False,
+        trim_whitespace=False,
     )
 
     password_confirm = serializers.CharField(
@@ -45,6 +45,11 @@ class RegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {"password_confirm": ["Password do not match"]}
             )
+
+        candidate_user = User(
+            username=attrs["username"],
+            email=attrs["email"],
+        )
 
         try:
             validate_password(
