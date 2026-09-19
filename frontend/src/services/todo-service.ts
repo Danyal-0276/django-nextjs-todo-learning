@@ -1,6 +1,6 @@
 import { apiRequest } from "@/lib/api-client";
 import type { CreateTodoInput, Todo, UpdateTodoInput } from "@/types/todo";
-// Replace the dashboard hook's local handlers with these calls when the API exists.
+// Real CRUD requests sent to the authenticated Django Todo API.
 export const todoService = {
   list: () => apiRequest<Todo[]>("/todos/"),
   create: (data: CreateTodoInput) =>

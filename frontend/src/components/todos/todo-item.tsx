@@ -70,7 +70,11 @@ export function TodoItem({
 
           <Button type="submit">Save</Button>
 
-          <Button type="button" variant="secondary" onClick={cancelEditing}>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={cancelEditing}
+          >
             Cancel
           </Button>
         </form>

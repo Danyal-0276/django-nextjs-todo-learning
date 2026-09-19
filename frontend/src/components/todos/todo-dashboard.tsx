@@ -17,7 +17,17 @@ export function TodoDashboard() {
     () => false,
   );
   const accessToken = hydrated ? tokenStorage.getAccess() : null;
-  const { todos, completed, notice, add, update, toggle, remove } = useTodos();
+  const {
+    todos,
+    completed,
+    loading,
+    error,
+    notice,
+    add,
+    update,
+    toggle,
+    remove,
+  } = useTodos();
   const remaining = todos.length - completed;
 
   useEffect(() => {
@@ -65,16 +75,37 @@ export function TodoDashboard() {
               {completed} of {todos.length} complete
             </p>
           </div>
-          <TodoList
-            todos={todos}
-            onToggle={toggle}
-            onUpdate={update}
-            onDelete={remove}
-          />
+          {error && (
+            <div
+              role="alert"
+              className="mb-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm font-semibold text-red-700"
+            >
+              {error}
+            </div>
+          )}
+          {loading ? (
+            <div
+              role="status"
+              className="rounded-2xl border border-line bg-card px-6 py-14 text-center"
+            >
+              <p className="font-display text-xl font-semibold">
+                Loading your tasks…
+              </p>
+              <p className="mt-2 text-sm text-muted">
+                Asking Django for your saved Todos.
+              </p>
+            </div>
+          ) : (
+            <TodoList
+              todos={todos}
+              onToggle={toggle}
+              onUpdate={update}
+              onDelete={remove}
+            />
+          )}
         </div>
         <p className="mt-5 text-center text-xs font-semibold text-muted">
-          Mock data resets when you refresh. API integration is intentionally
-          planned, not active.
+          Your tasks are loaded from Django and stored in PostgreSQL.
         </p>
         <div
           aria-live="polite"
