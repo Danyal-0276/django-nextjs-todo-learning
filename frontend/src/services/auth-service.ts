@@ -5,7 +5,8 @@ import type {
   LoginCredentials,
   RegisterPayload,
 } from "@/types/auth";
-// Planned only: the mock forms do not call these until Django REST endpoints exist.
+
+// Authentication requests for the Django REST API.
 export const authService = {
   login: (data: LoginCredentials) =>
     apiRequest<AuthTokens>("/auth/token/", {

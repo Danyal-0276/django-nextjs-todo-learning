@@ -7,7 +7,7 @@ export default function SignupPage() {
     <AuthShell
       eyebrow="Start with one small task"
       title="Build the habit. Learn the stack."
-      copy="Create a mock account now. Later, this exact flow will connect to Django REST Framework and real JWT authentication."
+      copy="Create your account through the Django REST API, then log in to receive your JWT access and refresh tokens."
     >
       <SignupForm />
     </AuthShell>

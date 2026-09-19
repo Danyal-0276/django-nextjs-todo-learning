@@ -6,6 +6,7 @@ export interface RegisterPayload {
   username: string;
   email: string;
   password: string;
+  password_confirm: string;
 }
 export interface AuthTokens {
   access: string;
