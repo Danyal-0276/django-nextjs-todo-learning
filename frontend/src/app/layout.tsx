@@ -3,7 +3,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: { default: "Daymark", template: "%s · Daymark" },
   description:
-    "A mock todo frontend built to learn Next.js and Django REST integration.",
+    "A full-stack Todo application built with Next.js, Django REST Framework, PostgreSQL, and JWT authentication.",
 };
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (

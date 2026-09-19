@@ -27,7 +27,7 @@ export function AuthShell({
           </p>
           <div className="mt-10 flex items-center gap-4 text-sm font-bold text-muted">
             <span className="h-px w-12 bg-ink" />
-            Mock mode · no API connected
+            Django REST API · JWT authentication
           </div>
         </div>
         <div

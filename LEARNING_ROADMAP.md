@@ -158,11 +158,11 @@ Work through these steps in order and commit after each working milestone. Comma
 - **Why:** this is the first end-to-end milestone.
 - **Files later:** frontend services, hooks, forms, `.env.local`.
 - **Commands:** run Django and `npm run dev` in separate terminals.
-- **Example:** replace the hook's initial mock list with `await todoService.list()`.
+- **Example:** replace temporary local Todo data with `await todoService.list()`.
 - **Test:** browser DevTools shows a successful request and the UI renders database data.
 - **Avoid:** hardcoding the backend URL throughout components.
 
-## 17. Replace mock services with real requests
+## 17. Replace temporary frontend state with real requests
 
 - **Learn:** data fetching, optimistic updates, rollbacks, and request state.
 - **Why:** UI operations must now reflect server truth.
@@ -204,4 +204,4 @@ Work through these steps in order and commit after each working milestone. Comma
 
 ## Recommended next task
 
-The backend foundation, PostgreSQL migration, REST CRUD API, registration, JWT authentication, authorization tests, CORS, and frontend signup/login integration are complete. Continue with steps 16–19: align the frontend Todo type with the serializer, replace `useTodos` mock state with `todoService` requests one operation at a time, then add automatic access-token refresh and frontend tests.
+The backend foundation, PostgreSQL migration, REST CRUD API, registration, JWT authentication, authorization tests, CORS, and frontend authentication/Todo integration are complete. Continue by adding automatic access-token refresh, operation-specific loading states, frontend tests, CI, and deployment practice.
