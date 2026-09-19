@@ -5,11 +5,11 @@ export const todoService = {
   list: () => apiRequest<Todo[]>("/todos/"),
   create: (data: CreateTodoInput) =>
     apiRequest<Todo>("/todos/", { method: "POST", body: JSON.stringify(data) }),
-  update: (id: string, data: UpdateTodoInput) =>
+  update: (id: number, data: UpdateTodoInput) =>
     apiRequest<Todo>(`/todos/${id}/`, {
       method: "PATCH",
       body: JSON.stringify(data),
     }),
-  remove: (id: string) =>
+  remove: (id: number) =>
     apiRequest<void>(`/todos/${id}/`, { method: "DELETE" }),
 };

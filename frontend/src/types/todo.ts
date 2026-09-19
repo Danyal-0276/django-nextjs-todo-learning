@@ -1,8 +1,15 @@
 export interface Todo {
-  id: string;
+  id: number;
   title: string;
   completed: boolean;
-  createdAt: string;
+  created_at: string;
+  updated_at: string;
 }
-export type CreateTodoInput = Pick<Todo, "title">;
-export type UpdateTodoInput = Partial<Pick<Todo, "title" | "completed">>;
+
+export interface CreateTodoInput {
+  title: string;
+}
+
+export type UpdateTodoInput = Partial<
+  Pick<Todo, "title" | "completed">
+>;
