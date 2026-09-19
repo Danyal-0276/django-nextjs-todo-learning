@@ -4,7 +4,7 @@
 
 A beginner-friendly full-stack Todo application for learning Django REST APIs, Next.js integration, PostgreSQL, JWT authentication, and user authorization.
 
-The repository deliberately separates the server-rendered Django application from a Next.js frontend. The Django backend now uses PostgreSQL and exposes authenticated Todo REST endpoints with JWT access and refresh tokens. The frontend still uses local mock state, so CORS, API registration, and browser integration remain learning exercises.
+The repository deliberately separates the server-rendered Django application from a Next.js frontend. The Django backend uses PostgreSQL and exposes registration, JWT authentication, and user-scoped Todo REST endpoints. The Next.js signup and login forms now call the real Django API, while the Todo dashboard still uses local mock state until the next learning phase.
 
 ## Learning objectives
 
@@ -23,29 +23,31 @@ The repository deliberately separates the server-rendered Django application fro
 - PostgreSQL persistence through Django's ORM and environment-based database configuration.
 - Django REST Framework serializer, viewset, router, protected Todo CRUD endpoints, and per-user queryset filtering.
 - Simple JWT access-token login, refresh, verification, and Bearer-token authentication.
-- Backend model, authentication, template-view, authorization, REST API, and JWT tests (46 total).
+- Backend model, authentication, template-view, authorization, REST API, JWT, registration, and CORS tests (62 total).
+- Public REST registration with password confirmation, Django password validation, and unique-email validation.
+- CORS restricted to the local Next.js origins and `/api/` routes.
 - Next.js App Router frontend with TypeScript, Tailwind CSS, and ESLint.
 - Responsive login, signup, dashboard, loading, empty, feedback, and not-found views.
 - Frontend add, edit, complete/uncomplete, and delete interactions using React state.
-- Typed API client, auth/todo service contracts, and token-storage learning boilerplate.
+- Typed API client, real frontend registration/JWT login, token storage, logout, and a basic client-side dashboard guard.
+- Todo service contracts prepared for the next integration phase.
 
 ### Mocked
 
-- Frontend authentication accepts locally validated demo input and navigates to the dashboard.
 - Todos reset to sample data on refresh.
-- No frontend request currently reaches Django.
+- The dashboard greeting and Todo interactions still use frontend-only data.
 
 ### Planned
 
-- REST registration, refresh-token blacklisting/logout, and CORS configuration.
-- Connecting the Next.js forms and Todo dashboard to the Django API.
-- Automatic access-token refresh, frontend API error handling, frontend tests, CI, and deployment.
+- Connecting the Todo dashboard to the Django API.
+- Automatic access-token refresh and optional refresh-token blacklisting.
+- Frontend component/integration tests, CI, and deployment.
 
 ## Technology stack
 
 - **Backend:** Python, Django 6.1.1, Django REST Framework 3.18.1, Simple JWT 5.5.1, PostgreSQL
 - **Frontend:** Next.js 16 App Router, React 19, TypeScript, Tailwind CSS 4
-- **Planned:** django-cors-headers, full frontend integration, automated frontend tests, and deployment
+- **Integration status:** authentication connected; Todo API connection, automatic token refresh, automated frontend tests, and deployment remain planned
 
 ## Project structure
 
@@ -70,9 +72,9 @@ The repository deliberately separates the server-rendered Django application fro
 │   └── src/
 │       ├── app/                  # Routes: login, signup, todos, 404
 │       ├── components/           # Auth, layout, todo, and UI components
-│       ├── hooks/                # Mock todo state
-│       ├── lib/                  # API client and token helper
-│       ├── services/             # Future auth/todo API calls
+│       ├── hooks/                # Mock todo state awaiting API integration
+│       ├── lib/                  # API client and token storage helper
+│       ├── services/             # Auth and Todo API request functions
 │       └── types/                # Shared TypeScript contracts
 ├── .env.example
 ├── .gitignore
@@ -111,7 +113,7 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:3000/`. The API URL placeholder is configured with `NEXT_PUBLIC_API_BASE_URL` in `frontend/.env.local`; changing it has no visible effect until mock handlers are replaced with service calls.
+Open `http://localhost:3000/`. `NEXT_PUBLIC_API_BASE_URL` in `frontend/.env.local` tells the signup and login forms where to reach Django. Restart the development server after changing this value.
 
 Useful checks:
 
@@ -128,7 +130,7 @@ npm run build
 
 | Method | Endpoint | Purpose | Authentication |
 |---|---|---|---|
-| POST | `/api/auth/register/` | Create a user (planned) | Public |
+| POST | `/api/auth/register/` | Create a validated user (implemented) | Public |
 | POST | `/api/auth/token/` | Obtain access and refresh tokens (implemented) | Public |
 | POST | `/api/auth/token/refresh/` | Refresh an access token (implemented) | Refresh token |
 | POST | `/api/auth/token/verify/` | Verify a token (implemented) | Token in request body |
@@ -140,12 +142,13 @@ npm run build
 
 ## Authentication flow
 
-1. Existing users can send credentials to the implemented token endpoint.
-2. Django returns a five-minute access token and a one-day refresh token.
-3. API clients send `Authorization: Bearer <access-token>` on protected requests.
-4. Django permissions and queryset filtering enforce ownership; hiding UI is not authorization.
-5. The implemented refresh endpoint exchanges a valid refresh token for a new access token.
-6. API registration, automatic frontend refresh, and refresh-token blacklisting/logout are the next planned stages.
+1. The Next.js signup form sends registration data to Django, which validates and creates the user.
+2. The Next.js login form sends credentials to the token endpoint.
+3. Django returns a five-minute access token and a one-day refresh token.
+4. The learning frontend stores both tokens in local storage and adds the access token to API requests.
+5. Django permissions and queryset filtering enforce ownership; the client-side route guard is only a user-experience feature.
+6. Frontend logout clears stored tokens. Server-side refresh-token blacklisting is not implemented.
+7. The refresh endpoint exists, but automatic frontend refresh and request retry remain planned.
 
 Token storage in this project is only a commented learning starting point. Review XSS, CSRF, secure cookies, token rotation, and logout behavior before choosing a production design.
 

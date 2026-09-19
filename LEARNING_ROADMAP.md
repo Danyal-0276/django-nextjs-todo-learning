@@ -202,6 +202,6 @@ Work through these steps in order and commit after each working milestone. Comma
 - **Test:** deploy to a staging environment and complete register → login → CRUD → refresh → logout.
 - **Avoid:** deploying with `DEBUG=True`, SQLite, empty `ALLOWED_HOSTS`, development email, or HTTP-only traffic.
 
-## Recommended first task
+## Recommended next task
 
-Start with steps 1–2: fix the legacy login-name collision, add a real `completed` field through a new migration, and write tests that prove users cannot edit or delete another user's todo. That foundation will make the later API safer and easier to understand.
+The backend foundation, PostgreSQL migration, REST CRUD API, registration, JWT authentication, authorization tests, CORS, and frontend signup/login integration are complete. Continue with steps 16–19: align the frontend Todo type with the serializer, replace `useTodos` mock state with `todoService` requests one operation at a time, then add automatic access-token refresh and frontend tests.

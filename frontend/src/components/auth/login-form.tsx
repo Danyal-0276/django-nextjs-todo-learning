@@ -68,7 +68,7 @@ export function LoginForm() {
       <div>
         <h2 className="font-display text-3xl font-semibold">Welcome back</h2>
         <p className="mt-1 text-sm text-muted">
-          Any valid details work in this UI demo.
+          Enter the username and password registered with Django.
         </p>
       </div>
       <FormInput
@@ -84,10 +84,18 @@ export function LoginForm() {
         name="password"
         type="password"
         autoComplete="current-password"
-        placeholder="At least 8 characters"
+        placeholder="Enter your password"
         error={errors.password}
         required
       />
+      {errors.form && (
+        <p
+          role="alert"
+          className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700"
+        >
+          {errors.form}
+        </p>
+      )}
       <Button type="submit" disabled={loading} className="w-full">
         {loading ? "Opening your day…" : "Log in"}
       </Button>

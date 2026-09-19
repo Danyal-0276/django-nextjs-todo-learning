@@ -35,7 +35,6 @@ export function SignupForm() {
 
     if (Object.keys(next).length) return;
 
-    setLoading(true);
     try {
       setLoading(true);
 
@@ -52,10 +51,18 @@ export function SignupForm() {
         const apiErrors: Record<string, string> = {};
 
         for (const [field, messages] of Object.entries(error.data)) {
-          apiErrors[field] = Array.isArray(messages) ? messages[0] : messages;
+          const message = Array.isArray(messages) ? messages[0] : messages;
+
+          if (field === "detail" || field === "non_field_errors") {
+            apiErrors.form = message;
+          } else {
+            apiErrors[field] = message;
+          }
         }
 
-        apiErrors.form ??= error.message;
+        if (Object.keys(apiErrors).length === 0) {
+          apiErrors.form = error.message;
+        }
         setErrors(apiErrors);
       } else {
         setErrors({
@@ -73,7 +80,7 @@ export function SignupForm() {
           Create your space
         </h2>
         <p className="mt-1 text-sm text-muted">
-          Saved only for this demonstration.
+          Your account will be created by the Django backend.
         </p>
       </div>
       <FormInput

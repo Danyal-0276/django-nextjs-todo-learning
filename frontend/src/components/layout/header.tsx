@@ -1,8 +1,17 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { tokenStorage } from "@/lib/token-storage";
 export function Header() {
+  const router = useRouter();
   const dashboard = usePathname().startsWith("/todos");
+
+  function logout() {
+    tokenStorage.clear();
+    router.replace("/login");
+    router.refresh();
+  }
+
   return (
     <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-6 sm:px-8">
       <Link
@@ -22,12 +31,13 @@ export function Header() {
         className="flex items-center gap-2 text-sm font-bold"
       >
         {dashboard ? (
-          <Link
-            href="/login"
+          <button
+            type="button"
+            onClick={logout}
             className="rounded-xl px-4 py-2 hover:bg-white/60"
           >
-            Log out <span className="sr-only">of mock session</span>
-          </Link>
+            Log out
+          </button>
         ) : (
           <>
             <Link
